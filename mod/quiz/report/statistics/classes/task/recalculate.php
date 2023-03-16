@@ -57,18 +57,25 @@ class recalculate extends \core\task\scheduled_task {
                        q.grademethod AS quizgrademethod,
                        c.id AS courseid,
                        c.shortname AS courseshortname,
-                       MAX(quiza.timefinish) AS mostrecentattempttime,
-                       COUNT(1) AS numberofattempts
-
-                  FROM {quiz_attempts} quiza
-                  JOIN {quiz} q ON q.id = quiza.quiz
+                       qb.mostrecentattempttime,
+                       qb.numberofattempts
+                  FROM (SELECT qa.quiz,
+                               MAX(qa.timefinish) AS mostrecentattempttime,
+                               COUNT(1) AS numberofattempts
+                          FROM {quiz_attempts} qa
+                         WHERE qa.preview = 0
+                           AND qa.state = :quizstatefinished
+                      GROUP BY qa.quiz) qb
+                  JOIN {quiz} q ON q.id = qb.quiz
                   JOIN {course} c ON c.id = q.course
-
-                 WHERE quiza.preview = 0
-                   AND quiza.state = :quizstatefinished
-
-              GROUP BY q.id, q.name, q.grademethod, c.id, c.shortname
-              ORDER BY MAX(quiza.timefinish) DESC
+              GROUP BY q.id,
+                       q.name,
+                       q.grademethod,
+                       c.id,
+                       c.shortname,
+                       qb.mostrecentattempttime,
+                       qb.numberofattempts
+              ORDER BY qb.mostrecentattempttime DESC
             ", ["quizstatefinished" => quiz_attempt::FINISHED]);
 
         $anyexception = null;
