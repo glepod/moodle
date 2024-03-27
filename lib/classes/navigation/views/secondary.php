@@ -583,7 +583,7 @@ class secondary extends view {
         $incourseadmin = false;
 
         $activeleafnode = $this->page->settingsnav->find_active_node();
-        $parentnode = $activeleafnode->parent;
+        $parentnode = $activeleafnode->parent ?? null;
         if ($issingleactivitycourse && $parentnode && $parentnode->text === 'Results') {
             $activenode = $parentnode;
         }
