@@ -584,7 +584,7 @@ class secondary extends view {
 
         $activeleafnode = $this->page->settingsnav->find_active_node();
         $parentnode = $activeleafnode->parent ?? null;
-        if ($issingleactivitycourse && $parentnode && $parentnode->text === 'Results') {
+        if ($issingleactivitycourse && $parentnode && $parentnode->key === 'quiz_report') {
             $activenode = $parentnode;
         }
 
