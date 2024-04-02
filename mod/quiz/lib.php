@@ -2624,3 +2624,20 @@ function mod_quiz_user_preferences(): array {
     ];
     return $preferences;
 }
+
+/**
+ * Removes any question defaults that have been saved as user preferences for all users and
+ * clears the checkbox for the setting that triggers this function.
+ */
+function reset_question_defaults(): void {
+    global $DB;
+    if (get_config('quiz', 'questiondefaultsreset')) {
+        $DB->delete_records_select(
+            'user_preferences',
+            $DB->sql_like('name', '?', false),
+            ["qtype_%"]
+        );
+        // Clear the checkbox so this function can be triggered again by the user.
+        set_config('questiondefaultsreset', false, 'quiz');
+    }
+}

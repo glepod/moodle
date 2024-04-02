@@ -280,6 +280,23 @@ if ($ADMIN->fulltree) {
     // Autosave frequency.
     $quizsettings->add(new admin_setting_configduration('quiz/autosaveperiod',
             get_string('autosaveperiod', 'quiz'), get_string('autosaveperiod_desc', 'quiz'), 60, 1));
+
+    // Question defaults.
+    $quizsettings->add(new admin_setting_heading('questiondefaults',
+        get_string('questiondefaultsheading', 'quiz'), ''));
+
+    // Question defaults save.
+    $setting = new admin_setting_configcheckbox('quiz/questiondefaultssave',
+        get_string('questiondefaultssave', 'quiz'), get_string('questiondefaultssave_desc', 'quiz'),
+        1);
+    $quizsettings->add($setting);
+
+    // Question defaults reset.
+    $setting = new admin_setting_configcheckbox('quiz/questiondefaultsreset',
+        get_string('questiondefaultsreset', 'quiz'), get_string('questiondefaultsreset_desc', 'quiz'),
+        0);
+    $setting->set_updatedcallback('reset_question_defaults');
+    $quizsettings->add($setting);
 }
 
 // Now, depending on whether any reports have their own settings page, add
